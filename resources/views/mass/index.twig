@@ -1,0 +1,49 @@
+{% extends "./layouts/default.twig" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>GContacts // <a href="{{ route('home') }}">{{ Session.get('hd') }}</a> // mass create</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+            <p class="text-danger">
+                Please read the instructions carefully.
+            </p>
+
+            <p>
+                This page allows you to mass-create new shared contacts. It will not stop for anything.
+                If you make mistakes in your file, you end up with a lot of wrong contacts. So follow the instructions
+                and be careful.
+            </p>
+            <h3>Instructions</h3>
+            <ol>
+                <li>Download the example <a href="{{ route('mass-create.example') }}">CSV file</a>.</li>
+                <li>Open the file using Excel or Numbers (Mac)</li>
+                <li>You will see one header row, and two example rows.</li>
+                <li>Fill in as many contacts as you like, using the given fields.</li>
+                <li>Upload the file below.</li>
+            </ol>
+
+            <h3>Special considerations</h3>
+            <ul>
+                <li>Do NOT add or remove columns.</li>
+                <li>Feel free to remove the example rows of course</li>
+                <li>Make sure the file is saved as a "comma separated file",
+                    which is an option in both Excel and Numbers. Excel will start complaining that certain
+                    features are not not supported but Excel is a little bee about such things.
+                </li>
+                <li>Feel free to leave any field empty. The tool will ignore empty fields.</li>
+            </ul>
+            <h3>Upload</h3>
+
+            {{ Form.open({'files' : true,url: route('mass-create.upload')}) }}
+                <p>Upload here: <input type="file" name="csv" /></p>
+            <p><input type="submit" value="Upload" class="btn btn-success"></p>
+            {{ Form.close }}
+
+            <p class="text-info">Uploading could take a while!</p>
+
+        </div>
+    </div>
+{% endblock %}

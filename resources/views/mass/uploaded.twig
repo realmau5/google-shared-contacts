@@ -1,0 +1,27 @@
+{% extends "./layouts/default.twig" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>GContacts // <a href="{{ route('home') }}">{{ Session.get('hd') }}</a> // uploaded</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+            <p class="text-success">
+                File uploaded and processed!
+            </p>
+
+            {% if errors|length == 0 %}
+                <p>No errors!</p>
+
+            {% else %}
+                <p class="text-danger">Errors!</p>
+                <ul>
+                    {% for err in errors %}
+                        <li>{{ err }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

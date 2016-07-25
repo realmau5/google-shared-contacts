@@ -1,0 +1,60 @@
+{% if contact %}
+    {% for index, im in contact.im %}
+        <h4 class="im" data-index="{{ index }}">IM address #{{ index+1 }}
+            <small><a class="removeRow btn btn-danger btn-xs" data-index="{{ index }}" data-type="im"><span
+                            data-index="{{ index }}" data-type="im" class="glyphicon glyphicon-trash"></span></a>
+            </small>
+        </h4>
+        <table class="table table-bordered table-striped im" data-index="{{ index }}">
+            <tr>
+                <td>Type</td>
+                <td>
+                    <select name="im[{{ index }}][rel]" class="form-control">
+                        {% for imRel in defaultImRels %}
+                            {% if imRel == im.rel %}
+                                <option selected="selected" value="{{ imRel }}" label="{{ imRel }}">{{ imRel }}</option>
+                            {% else %}
+                                <option value="{{ imRel }}" label="{{ imRel }}">{{ imRel }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Label</td>
+                <td><input type="text" name="im[{{ index }}][label]" value="{{ im.label }}" placeholder="Label"
+                           class="form-control"/></td>
+            </tr>
+            <tr>
+                <td>Is primary?</td>
+                <td>
+                    {% if im.primary %}
+                        <input type="radio" name="im[{{ index }}][primary]" value="1" checked="checked"/>
+                    {% else %}
+                        <input type="radio" name="im[{{ index }}][primary]" value="1"/>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Protocol</td>
+                <td>
+                    <select name="im[{{ index }}][protocol]" class="form-control">
+                        {% for imProtocol in defaultImProtocols %}
+                            {% if im.protocol == imProtocol %}
+                                <option selected="selected" value="{{ imProtocol }}"
+                                        label="{{ imProtocol }}">{{ imProtocol }}</option>
+                            {% else %}
+                                <option value="{{ imProtocol }}" label="{{ imProtocol }}">{{ imProtocol }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td><input type="text" name="im[{{ index }}][address]" value="{{ im.address }}"
+                           placeholder="IM address" class="form-control"/></td>
+            </tr>
+        </table>
+    {% endfor %}
+{% endif %}

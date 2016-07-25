@@ -1,0 +1,74 @@
+{% if contact %}
+    {% for index, org in contact.organization %}
+        <h4 class="organization" data-index="{{ index }}">Organization nr. #{{ index+1 }}
+            <small><a href="#" class="removeRow btn btn-danger btn-xs" data-index="{{ index }}" data-type="organization"><span
+                            data-index="{{ index }}" data-type="organization"
+                            class="glyphicon glyphicon-trash"></span></a></small>
+        </h4>
+        <table class="table table-striped table-bordered organization" data-index="{{ index }}">
+            <tr>
+                <td style="width:30%;">Type</td>
+                <td>
+                    <select name="organization[{{ index }}][rel]" class="form-control">
+                        <option selected="selected" value="Other" label="(no type)">(no type)</option>
+                        {% for currentOrgRel in defaultOrgRels %}
+                            {% if org.rel and currentOrgRel == org.rel %}
+                                <option selected="selected" value="{{ currentOrgRel }}" label="{{ currentOrgRel }}">{{ currentOrgRel }}</option>
+                            {% else %}
+                                <option value="{{ currentOrgRel }}" label="{{ currentOrgRel }}">{{ currentOrgRel }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Label</td>
+                <td><input type="text" name="organization[{{ index }}][label]" class="form-control" placeholder="Label"
+                           value="{{ org.label }}"/></td>
+            </tr>
+            <tr>
+                <td>Primary?</td>
+                {% if org.primary %}
+                    <td><input type="radio" name="orgprimary" value="{{ index }}" checked="checked"/></td>
+                {% else %}
+                    <td><input type="radio" name="orgprimary" value="{{ index }}"/></td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Organization name</td>
+                <td><input type="text" name="organization[{{ index }}][orgname]" class="form-control" placeholder="Label"
+                           value="{{ org.orgName}}"/></td>
+            </tr>
+            <tr>
+                <td>Organization symbol</td>
+                <td><input type="text" name="organization[{{ index }}][orgsymbol]" class="form-control"
+                           placeholder="Label" value="{{ org.orgSymbol }}"/></td>
+            </tr>
+            <tr>
+                <td>Organization department</td>
+                <td><input type="text" name="organization[{{ index }}][orgdepartment]" class="form-control"
+                           placeholder="Label" value="{{ org.orgDepartment }}"/></td>
+            </tr>
+            <tr>
+                <td>Title in organization</td>
+                <td><input type="text" name="organization[{{ index }}][orgtitle]" class="form-control"
+                           placeholder="Label" value="{{ org.orgTitle }}"/></td>
+            </tr>
+            <tr>
+                <td>Job description</td>
+                <td><input type="text" name="organization[{{ index }}][orgjobdescription]" class="form-control"
+                           placeholder="Label" value="{{ org.orgJobDescription }}"/></td>
+            </tr>
+            <tr>
+                <td>
+                    Where<br/>
+                    <span class="small">A location</span>
+                </td>
+                <td><input type="text" name="organization[{{ index }}][where]" class="form-control" placeholder="Where"
+                           value="{{ org.where }}"/></td>
+            </tr>
+
+
+        </table>
+    {% endfor %}
+{% endif %}

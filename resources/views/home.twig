@@ -1,0 +1,91 @@
+{% extends "./layouts/default.twig" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>GContacts // {{ Session.get('hd') }}</h1>
+
+            <p>
+                These are the shared contacts for {{ Session.get('hd') }}. They'll show up
+                in lists called "Directory" or "Shared contacts" in your phone, in email applications
+                and online.
+            </p>
+
+            <p>
+                <div class="btn-group">
+                <a class="btn btn-info" href="{{ route('contacts.add') }}"><span
+                            class="glyphicon glyphicon-plus"></span> Add shared contact</a>
+                <a class="btn btn-default" href="{{ route('mass-create.index') }}"><span
+                            class="glyphicon glyphicon-plus-sign"></span> Mass create contacts</a>
+            </div>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            {{ Form.open({url:'massdelete'}) }}
+            <table class="table sortable table-bordered table-responsive" id="contactList">
+                <thead>
+                <tr>
+                    <th data-defaultsort="disabled">&nbsp;</th>
+                    <th data-defaultsign="az">Full name</th>
+                    <th data-defaultsign="az">Email address(es)</th>
+                    <th data-defaultsign="az">Phone number(s)</th>
+                    <th data-defaultsort="disabled">Edit</th>
+                    <th data-defaultsort="disabled">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <td><input type="checkbox" name="delete[]" value="{{ contact.getShortId }}"/></td>
+                        <td>{{ contact.getName.getFullName }}</td>
+                        <td>
+                            {% if contact.getEmail|length > 0 %}
+                                <ul>
+                                    {% for email in contact.getEmail %}
+                                        <li><a href="mailto:{{ email.getAddress }}">{{ email.getAddress }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if contact.getPhoneNumber|length > 0 %}
+                                <ul>
+                                    {% for phone in contact.getPhoneNumber %}
+                                        <li>{{ phone.getNumber }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ route('contacts.edit', contact.getShortId) }}" class="btn btn-info btn-xs"><span
+                                        class="glyphicon glyphicon-pencil"></span></a>
+                        </td>
+                        <td>
+                            <a href="{{ route('contacts.delete', contact.getShortId) }}"
+                               class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <button type="submit" name="submit" class="btn btn-danger btn-xs"><span
+                                    class="glyphicon glyphicon-trash"></span></button>
+                    </td>
+                    <td colspan="6"></td>
+                </tr>
+                </tfoot>
+            </table>
+            {{ Form.close }}
+            <p class="text-info">
+                Please remember it may take 24 hours for Google to reflect any changes made here.
+            </p>
+
+            <p><a href="{{ route('oauth.logout') }}" class="btn btn-sm btn-danger">Disconnect</a></p>
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,6 @@
+.loading {
+    background:url('../i/ajax-loader.gif') center no-repeat;
+    min-height:16px;
+}
+
+table ul {margin:0;padding:0;list-style-type: none;}
