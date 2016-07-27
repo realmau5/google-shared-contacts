@@ -23,11 +23,14 @@
 
     <div class="row">
         <div class="col-lg-12">
+            <p class="small">
+                Total number of contacts: {{ contacts|length }}
+            </p>
             {{ Form.open({url:'massdelete'}) }}
             <table class="table sortable table-bordered table-responsive" id="contactList">
                 <thead>
                 <tr>
-                    <th data-defaultsort="disabled">&nbsp;</th>
+                    <th data-defaultsort="disabled"><input type="checkbox" class="select-all" /></th>
                     <th data-defaultsign="az">Full name</th>
                     <th data-defaultsign="az">Email address(es)</th>
                     <th data-defaultsign="az">Phone number(s)</th>
@@ -38,7 +41,7 @@
                 <tbody>
                 {% for contact in contacts %}
                     <tr>
-                        <td><input type="checkbox" name="delete[]" value="{{ contact.getShortId }}"/></td>
+                        <td><input type="checkbox" class="do-check" name="delete[]" value="{{ contact.getShortId }}"/></td>
                         <td>{{ contact.getName.getFullName }}</td>
                         <td>
                             {% if contact.getEmail|length > 0 %}
@@ -79,6 +82,9 @@
                 </tr>
                 </tfoot>
             </table>
+            <p class="small">
+                Total number of contacts: {{ contacts|length }}
+            </p>
             {{ Form.close }}
             <p class="text-info">
                 Please remember it may take 24 hours for Google to reflect any changes made here.

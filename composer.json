@@ -11,8 +11,8 @@
         "google/apiclient": "^1.1",
         "zendframework/zend-feed": "^2.5",
         "barryvdh/laravel-ide-helper": "^2.0",
-        "illuminate/html": "^5.0",
-        "rcrowe/twigbridge": "0.7.x",
+        "laravelcollective/html": "^5.0",
+        "rcrowe/twigbridge": "0.9.x",
         "shpasser/gae-support-l5": "^1.4"
     },
     "require-dev": {

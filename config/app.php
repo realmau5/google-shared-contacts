@@ -137,8 +137,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Shpasser\GaeSupportL5\GaeSupportServiceProvider::class,
-        'Illuminate\Html\HtmlServiceProvider',
+        //Shpasser\GaeSupportL5\GaeSupportServiceProvider::class,
+        // 'Illuminate\Html\HtmlServiceProvider',
         'TwigBridge\ServiceProvider',
 
         /*

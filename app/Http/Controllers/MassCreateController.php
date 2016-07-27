@@ -4,6 +4,7 @@ namespace GContacts\Http\Controllers;
 
 use GContacts\Feed\EntryParser;
 use GContacts\Google\SharedContactsInterface;
+use Illuminate\Http\Request;
 use Input;
 use View;
 
@@ -37,21 +38,19 @@ class MassCreateController extends Controller
      */
     public function index()
     {
-
-
         return view('mass.index');
     }
 
     /**
      *
      */
-    public function upload()
+    public function upload(Request $request)
     {
         // get the file:
-        if (!Input::hasFile('csv')) {
-            return View::make('error')->with('message', 'Pls upload something.');
+        if (!$request->hasFile('csv')) {
+            return view('error')->with('message', 'Pls upload something.');
         }
-        $file     = Input::file('csv');
+        $file     = $request->file('csv');
         //$fileName = $file->getRealPath();
         $fileName = $_FILES['csv']['tmp_name'];
         //var_dump($_FILES);exit;

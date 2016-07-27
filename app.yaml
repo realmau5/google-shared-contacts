@@ -1,5 +1,5 @@
 application:    g-shared-contacts
-version:        1
+version:        2
 runtime:        php55
 api_version:    1
 
@@ -7,14 +7,17 @@ handlers:
         - url: /favicon\.ico
           static_files: public/favicon.ico
           upload: public/favicon\.ico
+          secure: never
 
         - url: /assets/(.*\.(htm$|html$|ttf$|css$|js$|png$|woff$))
           static_files: public/assets/\1
           upload: public/assets/(.*\.(htm$|ttf$|html$|css$|js$|png$|woff$))
           application_readable: true
+          secure: never
 
         - url: /.*
           script: public/index.php
+          secure: never
 
 skip_files:
         - ^(.*/)?#.*#$
