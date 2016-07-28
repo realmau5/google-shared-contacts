@@ -44,7 +44,7 @@ class AuthGoogle
     public function handle($request, Closure $next)
     {
         if (Session::has('access_token')) {
-            $token        = Session::get('access_token');
+            $token        = session('access_token');
             $expireMoment = $token['created'] + $token['expires_in'];
             $time         = time();
             if ($time > $expireMoment) {

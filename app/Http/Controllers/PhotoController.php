@@ -1,7 +1,7 @@
 <?php
-namespace GContacts\Http\Controllers;
+namespace GSharedContacts\Http\Controllers;
 
-use GContacts\Google\SharedContactsInterface;
+use GSharedContacts\Google\SharedContactsInterface;
 
 
 /**

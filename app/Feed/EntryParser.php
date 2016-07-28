@@ -58,7 +58,7 @@ class EntryParser
         }
 
         // we parse the shortID ourselves as well:
-        $search  = 'http://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/base/';
+        $search  = 'http://www.google.com/m8/feeds/contacts/' . session('hd') . '/base/';
         $shortID = str_replace($search, '', $contact->getId());
         $contact->setShortID($shortID);
         unset($search, $shortID);
@@ -338,7 +338,7 @@ class EntryParser
 
         // add ID:
         $id = $dom->createElement(
-            'id', 'http://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/base/' . $contact->getId()
+            'id', 'http://www.google.com/m8/feeds/contacts/' . session('hd') . '/base/' . $contact->getId()
         );
         $entry->appendChild($id);
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace GContacts\Http\Controllers;
-use GContacts\Google\SharedContactsInterface;
-use GContacts\AtomType\Email;
-use GContacts\AtomType\Im;
-use GContacts\AtomType\Organization;
-use GContacts\AtomType\Phonenumber;
-use GContacts\AtomType\StructuredPostalAddress;
+namespace GSharedContacts\Http\Controllers;
+use GSharedContacts\Google\SharedContactsInterface;
+use GSharedContacts\AtomType\Email;
+use GSharedContacts\AtomType\Im;
+use GSharedContacts\AtomType\Organization;
+use GSharedContacts\AtomType\Phonenumber;
+use GSharedContacts\AtomType\StructuredPostalAddress;
 /**
  * Class RpcController
  */

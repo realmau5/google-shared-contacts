@@ -53,7 +53,7 @@ class ContactsController extends Controller
      *
      * @return View
      */
-    public function edit($code)
+    public function edit(string $code)
     {
         $fullContact = $this->contacts->getContact($code);
 

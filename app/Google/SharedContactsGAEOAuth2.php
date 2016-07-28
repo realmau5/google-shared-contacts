@@ -79,10 +79,10 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     private function _getAllContacts($index = 1)
     {
-        $URL = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full';
+        $URL = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
         $URL .= '?max-results=25&start-index=' . $index;
 
-        $token = Session::get('access_token');
+        $token = session('access_token');
 
         $headers
               = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
@@ -128,10 +128,10 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     public function uploadPhoto($code, UploadedFile $photo)
     {
-        $URL     = 'https://www.google.com/m8/feeds/photos/media/' . Session::get('hd') . '/' . $code;
+        $URL     = 'https://www.google.com/m8/feeds/photos/media/' . session('hd') . '/' . $code;
         $mime    = $photo->getClientMimeType();
-        $token   = Session::get('access_token');
-        $headers = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: " . $mime . "\r\nIf-Match: *\r\nGData-Version: 3.0\r\n";
+        $token   = session('access_token');
+        $headers = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: " . $mime . "\r\nIf-Match: *\r\nGData-Version: 3.0\r\n";
         //$filePath = $photo->getRealPath();
         $filePath = $_FILES['photo']['tmp_name'];
         $content  = file_get_contents($filePath);
@@ -159,10 +159,10 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     public function update(DomDocument $xml, $code)
     {
-        $token   = Session::get('access_token');
-        $URL     = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
+        $token   = session('access_token');
+        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
         $headers
-                 = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
+                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
         $opts    = [
             'http' => [
                 'method'  => 'PUT',
@@ -186,9 +186,9 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     public function delete(Entry $contact, $code)
     {
-        $token   = Session::get('access_token');
-        $URL     = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
-        $headers = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\nIf-Match: "
+        $token   = session('access_token');
+        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $headers = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\nIf-Match: "
             . $contact->getEtag() . "\r\n";
 
         $opts    = [
@@ -212,11 +212,11 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     public function create(DomDocument $xml)
     {
-        $URL   = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full';
-        $token = Session::get('access_token');
+        $URL   = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
+        $token = session('access_token');
 
         $headers
-              = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
+              = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
         $opts = [
             'http' => [
                 'method'  => 'POST',
@@ -248,9 +248,9 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
             if ($link->getRel() == 'http://schemas.google.com/contacts/2008/rel#photo') {
                 // get photo from Google:
                 $URL     = $link->getHref();
-                $token   = Session::get('access_token');
+                $token   = session('access_token');
                 $headers
-                         = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
+                         = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
                 $opts    = [
                     'http' => [
                         'method' => 'GET',
@@ -275,10 +275,10 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      */
     public function getContact($code)
     {
-        $URL     = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
-        $token   = Session::get('access_token');
+        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $token   = session('access_token');
         $headers
-                 = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
+                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
         $opts    = [
             'http' => [
                 'method' => 'GET',
@@ -328,12 +328,12 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     public function logout()
     {
         $URL     = 'https://www.google.com/accounts/AuthSubRevokeToken';
-        $token   = Session::get('access_token');
+        $token   = session('access_token');
         $context = [
             'http' => [
                 'method'  => 'GET',
                 'header'  =>
-                    'Authorization: AuthSub token="' . $token->access_token . '"' . "\r\n" .
+                    'Authorization: AuthSub token="' . $token['access_token'] . '"' . "\r\n" .
                     'Content-Type: application/x-www-form-urlencoded' . "\r\n" .
                     'User-Agent: GSharedContacts/0.1' . "\r\n",
                 'content' => null

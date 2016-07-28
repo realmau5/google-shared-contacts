@@ -1,9 +1,9 @@
 <?php
 
-namespace GContacts\Http\Controllers;
+namespace GSharedContacts\Http\Controllers;
 
-use GContacts\Feed\EntryParser;
-use GContacts\Google\SharedContactsInterface;
+use GSharedContacts\Feed\EntryParser;
+use GSharedContacts\Google\SharedContactsInterface;
 use Illuminate\Http\Request;
 use Input;
 use View;
@@ -11,7 +11,7 @@ use View;
 /**
  * Class MassCreateController
  *
- * @package GContacts\Http\Controllers
+ * @package GSharedContacts\Http\Controllers
  */
 class MassCreateController extends Controller
 {

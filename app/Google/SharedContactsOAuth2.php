@@ -80,13 +80,13 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     private function _getAllContacts($index = 1)
     {
-        $URL = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full';
+        $URL = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
         $URL .= '?max-results=25&start-index=' . $index;
 
-        $token  = Session::get('access_token');
+        $token  = session('access_token');
         $result = Requests::get(
             $URL, [
-                    'Authorization' => 'Bearer ' . $token->access_token,
+                    'Authorization' => 'Bearer ' . $token['access_token'],
                     'Content-Type'  => 'application/x-www-form-urlencoded',
                     'GData-Version' => '3.0',
                 ]
@@ -123,12 +123,12 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function uploadPhoto($code, UploadedFile $photo)
     {
-        $URL    = 'https://www.google.com/m8/feeds/photos/media/' . Session::get('hd') . '/' . $code;
-        $token  = Session::get('access_token');
+        $URL    = 'https://www.google.com/m8/feeds/photos/media/' . session('hd') . '/' . $code;
+        $token  = session('access_token');
         $mime   = $photo->getClientMimeType();
         $result = Requests::put(
             $URL, [
-            'Authorization' => 'Bearer ' . $token->access_token,
+            'Authorization' => 'Bearer ' . $token['access_token'],
             'Content-Type'  => $mime,
             'GData-Version' => '3.0',
             'If-Match'      => '*'
@@ -144,12 +144,12 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function update(DomDocument $xml, $code)
     {
-        $token  = Session::get('access_token');
-        $URL    = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
+        $token  = session('access_token');
+        $URL    = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
         $result = Requests::put(
             $URL,
             [
-                'Authorization' => 'Bearer ' . $token->access_token,
+                'Authorization' => 'Bearer ' . $token['access_token'],
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
             ], $xml->saveXML()
@@ -176,12 +176,12 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function delete(Entry $contact, $code)
     {
-        $token  = Session::get('access_token');
-        $URL    = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
+        $token  = session('access_token');
+        $URL    = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
         $result = Requests::delete(
             $URL,
             [
-                'Authorization' => 'Bearer ' . $token->access_token,
+                'Authorization' => 'Bearer ' . $token['access_token'],
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
                 'If-Match'      => $contact->getEtag()
@@ -208,12 +208,12 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function create(DomDocument $xml)
     {
-        $token  = Session::get('access_token');
-        $URL    = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full';
+        $token  = session('access_token');
+        $URL    = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
         $result = Requests::post(
             $URL,
             [
-                'Authorization' => 'Bearer ' . $token->access_token,
+                'Authorization' => 'Bearer ' . $token['access_token'],
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
             ], $xml->saveXML()
@@ -239,7 +239,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function getPhoto($code)
     {
-        $token = Session::get('access_token');
+        $token = session('access_token');
         $entry = $this->getContact($code);
         /** @var $link \GSharedContacts\AtomType\Link */
         foreach ($entry->getLink() as $link) {
@@ -247,7 +247,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
                 // get photo from Google:
                 $result = Requests::get(
                     $link->getHref(), [
-                                        'Authorization' => 'Bearer ' . $token->access_token,
+                                        'Authorization' => 'Bearer ' . $token['access_token'],
                                         'Content-Type'  => 'application/x-www-form-urlencoded',
                                         'GData-Version' => '3.0',
                                     ]
@@ -272,11 +272,11 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function getContact($code)
     {
-        $URL    = 'https://www.google.com/m8/feeds/contacts/' . Session::get('hd') . '/full/' . $code;
-        $token  = Session::get('access_token');
+        $URL    = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $token  = session('access_token');
         $result = Requests::get(
             $URL, [
-                    'Authorization' => 'Bearer ' . $token->access_token,
+                    'Authorization' => 'Bearer ' . $token['access_token'],
                     'Content-Type'  => 'application/x-www-form-urlencoded',
                     'GData-Version' => '3.0',
                 ]
@@ -309,8 +309,8 @@ class SharedContactsOAuth2 implements SharedContactsInterface
      */
     public function logout()
     {
-        $token  = Session::get('access_token');
-        $URL    = 'https://accounts.google.com/o/oauth2/revoke?token=' . $token->access_token;
+        $token  = session('access_token');
+        $URL    = 'https://accounts.google.com/o/oauth2/revoke?token=' . $token['access_token'];
         $result = Requests::get($URL);
 
         return true;
