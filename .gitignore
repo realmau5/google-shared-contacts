@@ -1,7 +1,6 @@
-__static__
 /vendor
 /node_modules
+/public/storage
+Homestead.yaml
+Homestead.json
 .env
-_development
-.env.local
-storage/logs

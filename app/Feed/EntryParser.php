@@ -1,24 +1,24 @@
 <?php
 
 
-namespace GContacts\Feed;
+namespace GSharedContacts\Feed;
 
 use DomDocument;
-use GContacts\AtomType\Birthday;
-use GContacts\AtomType\Category;
-use GContacts\AtomType\Email;
-use GContacts\AtomType\Im;
-use GContacts\AtomType\Link;
-use GContacts\AtomType\Name;
-use GContacts\AtomType\Organization;
-use GContacts\AtomType\Phonenumber;
-use GContacts\AtomType\StructuredPostalAddress;
+use GSharedContacts\AtomType\Birthday;
+use GSharedContacts\AtomType\Category;
+use GSharedContacts\AtomType\Email;
+use GSharedContacts\AtomType\Im;
+use GSharedContacts\AtomType\Link;
+use GSharedContacts\AtomType\Name;
+use GSharedContacts\AtomType\Organization;
+use GSharedContacts\AtomType\Phonenumber;
+use GSharedContacts\AtomType\StructuredPostalAddress;
 use Session;
 
 /**
  * Class EntryParser
  *
- * @package GContacts\Feed
+ * @package GSharedContacts\Feed
  */
 class EntryParser
 {
@@ -244,7 +244,7 @@ class EntryParser
             'structuredPostalAddress' => [],
             'organization'            => []
         ];
-        /** @var $phone \GContacts\AtomType\Phonenumber */
+        /** @var $phone \GSharedContacts\AtomType\Phonenumber */
         foreach ($contact->getPhoneNumber() as $phone) {
             $array['phoneNumber'][] = [
                 'number'  => $phone->getNumber(),
@@ -255,7 +255,7 @@ class EntryParser
             ];
         }
 
-        /** @var $email \GContacts\AtomType\Email */
+        /** @var $email \GSharedContacts\AtomType\Email */
         foreach ($contact->getEmail() as $email) {
             $array['email'][] = [
                 'address' => $email->getAddress(),
@@ -265,7 +265,7 @@ class EntryParser
             ];
         }
 
-        /** @var $im \GContacts\AtomType\Im */
+        /** @var $im \GSharedContacts\AtomType\Im */
         foreach ($contact->getIm() as $im) {
             $array['im'][] = [
                 'address'  => $im->getAddress(),
@@ -276,7 +276,7 @@ class EntryParser
             ];
         }
 
-        /** @var $org \GContacts\AtomType\Organization */
+        /** @var $org \GSharedContacts\AtomType\Organization */
         foreach ($contact->getOrganization() as $org) {
             $array['organization'][] = [
                 'rel'               => $org->getRel(),
@@ -291,7 +291,7 @@ class EntryParser
             ];
         }
 
-        /** @var $spa \GContacts\AtomType\StructuredPostalAddress */
+        /** @var $spa \GSharedContacts\AtomType\StructuredPostalAddress */
         foreach ($contact->getStructuredPostalAddress() as $spa) {
             $array['structuredPostalAddress'][] = [
                 'rel'              => $spa->getRel(),
@@ -378,31 +378,31 @@ class EntryParser
         $entry->appendChild($contact->getName()->parseToDomNode($dom));
 
         // add email:
-        /** @var $email \GContacts\AtomType\Email */
+        /** @var $email \GSharedContacts\AtomType\Email */
         foreach ($contact->getEmail() as $email) {
             $entry->appendChild($email->parseToDomNode($dom));
         }
 
         // add im
-        /** @var $im \GContacts\AtomType\Im */
+        /** @var $im \GSharedContacts\AtomType\Im */
         foreach ($contact->getIm() as $im) {
             $entry->appendChild($im->parseToDomNode($dom));
         }
 
         // add phone
-        /** @var $p \GContacts\AtomType\Phonenumber */
+        /** @var $p \GSharedContacts\AtomType\Phonenumber */
         foreach ($contact->getPhoneNumber() as $p) {
             $entry->appendChild($p->parseToDomNode($dom));
         }
 
         // add address
-        /** @var $a \GContacts\AtomType\StructuredPostalAddress */
+        /** @var $a \GSharedContacts\AtomType\StructuredPostalAddress */
         foreach ($contact->getStructuredPostalAddress() as $a) {
             $entry->appendChild($a->parseToDomNode($dom));
         }
 
         // add org
-        /** @var $org \GContacts\AtomType\Organization */
+        /** @var $org \GSharedContacts\AtomType\Organization */
         foreach ($contact->getOrganization() as $org) {
             $entry->appendChild($org->parseToDomNode($dom));
         }

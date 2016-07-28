@@ -1,9 +1,9 @@
 <?php
-namespace GContacts\Google;
+namespace GSharedContacts\Google;
 
 use DOMDocument;
-use GContacts\Feed\Entry;
-use GContacts\Feed\EntryParser;
+use GSharedContacts\Feed\Entry;
+use GSharedContacts\Feed\EntryParser;
 use Log;
 use Requests;
 use Session;
@@ -13,7 +13,7 @@ use Zend\Feed\Reader\Reader;
 /**
  * Class SharedContactsOAuth2
  *
- * @package GContacts\Google
+ * @package GSharedContacts\Google
  */
 class SharedContactsOAuth2 implements SharedContactsInterface
 {
@@ -188,7 +188,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
             ]
         );
         if ($result->status_code != 200) {
-            Log::error('Could not execute delete([GContacts\Feed\Entry], ' . $code . ') using URL ' . $URL);
+            Log::error('Could not execute delete([GSharedContacts\Feed\Entry], ' . $code . ') using URL ' . $URL);
             Log::error('Google responded: ' . print_r($result, true));
             $message = 'The status code returned was "' . $result->status_code . '".';
             if (!(strpos($result->raw, 'Token invalid') === false)) {
@@ -241,7 +241,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
     {
         $token = Session::get('access_token');
         $entry = $this->getContact($code);
-        /** @var $link \GContacts\AtomType\Link */
+        /** @var $link \GSharedContacts\AtomType\Link */
         foreach ($entry->getLink() as $link) {
             if ($link->getRel() == 'http://schemas.google.com/contacts/2008/rel#photo') {
                 // get photo from Google:

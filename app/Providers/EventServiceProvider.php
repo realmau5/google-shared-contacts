@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Providers;
+namespace GSharedContacts\Providers;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -13,8 +13,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'GContacts\Events\SomeEvent' => [
-            'GContacts\Listeners\EventListener',
+        'GSharedContacts\Events\SomeEvent' => [
+            'GSharedContacts\Listeners\EventListener',
         ],
     ];
 

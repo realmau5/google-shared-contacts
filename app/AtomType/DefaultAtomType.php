@@ -1,13 +1,13 @@
 <?php
 
 
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 
 /**
  * Class DefaultAtomType
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 class DefaultAtomType
 {

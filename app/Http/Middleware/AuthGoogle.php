@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Http\Middleware;
+namespace GSharedContacts\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
@@ -10,7 +10,7 @@ use Session;
 /**
  * Class AuthGoogle
  *
- * @package GContacts\Http\Middleware
+ * @package GSharedContacts\Http\Middleware
  */
 class AuthGoogle
 {
@@ -45,14 +45,14 @@ class AuthGoogle
     {
         if (Session::has('access_token')) {
             $token        = Session::get('access_token');
-            $expireMoment = $token->created + $token->expires_in;
+            $expireMoment = $token['created'] + $token['expires_in'];
             $time         = time();
             if ($time > $expireMoment) {
                 Session::forget('access_token');
-                return Redirect::route('index');
+                return redirect(route('index'));
             }
         } else {
-            return Redirect::route('index');
+            return redirect(route('index'));
         }
         return $next($request);
     }

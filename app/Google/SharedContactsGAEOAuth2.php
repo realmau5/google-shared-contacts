@@ -1,9 +1,9 @@
 <?php
-namespace GContacts\Google;
+namespace GSharedContacts\Google;
 
 use DOMDocument;
-use GContacts\Feed\Entry;
-use GContacts\Feed\EntryParser;
+use GSharedContacts\Feed\Entry;
+use GSharedContacts\Feed\EntryParser;
 use Log;
 use Requests;
 use Session;
@@ -13,7 +13,7 @@ use Zend\Feed\Reader\Reader;
 /**
  * Class SharedContactsGAEOAuth2
  *
- * @package GContacts\Google
+ * @package GSharedContacts\Google
  */
 class SharedContactsGAEOAuth2 implements SharedContactsInterface
 {
@@ -85,7 +85,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         $token = Session::get('access_token');
 
         $headers
-              = "Authorization: AuthSub token=\"{$token->access_token}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
+              = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
         $opts = [
             'http' => [
                 'method' => 'GET',
@@ -243,7 +243,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     public function getPhoto($code)
     {
         $entry = $this->getContact($code);
-        /** @var $link \GContacts\AtomType\Link */
+        /** @var $link \GSharedContacts\AtomType\Link */
         foreach ($entry->getLink() as $link) {
             if ($link->getRel() == 'http://schemas.google.com/contacts/2008/rel#photo') {
                 // get photo from Google:
@@ -271,7 +271,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     /**
      * @param $code
      *
-     * @return \GContacts\Feed\Entry|string
+     * @return \GSharedContacts\Feed\Entry|string
      */
     public function getContact($code)
     {
@@ -309,7 +309,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
                 'header'  =>
                     'Authorization: AuthSub token="' . $tempToken . '"' . "\r\n" .
                     'Content-Type: application/x-www-form-urlencoded' . "\r\n" .
-                    'User-Agent: GContacts/0.1' . "\r\n",
+                    'User-Agent: GSharedContacts/0.1' . "\r\n",
                 'content' => null
             ]
         ];
@@ -335,7 +335,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
                 'header'  =>
                     'Authorization: AuthSub token="' . $token->access_token . '"' . "\r\n" .
                     'Content-Type: application/x-www-form-urlencoded' . "\r\n" .
-                    'User-Agent: GContacts/0.1' . "\r\n",
+                    'User-Agent: GSharedContacts/0.1' . "\r\n",
                 'content' => null
             ]
         ];

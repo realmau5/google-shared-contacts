@@ -2,10 +2,10 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-12">
-            <h1>GContacts // {{ Session.get('hd') }}</h1>
+            <h1>GContacts // {{ session('hd') }}</h1>
 
             <p>
-                These are the shared contacts for {{ Session.get('hd') }}. They'll show up
+                These are the shared contacts for {{ session('hd') }}. They'll show up
                 in lists called "Directory" or "Shared contacts" in your phone, in email applications
                 and online.
             </p>

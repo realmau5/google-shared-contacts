@@ -1,14 +1,14 @@
 <?php
-namespace GContacts\Http\Controllers;
+namespace GSharedContacts\Http\Controllers;
 
-use GContacts\AtomType\Email;
-use GContacts\AtomType\Im;
-use GContacts\AtomType\Organization;
-use GContacts\AtomType\Phonenumber;
-use GContacts\AtomType\StructuredPostalAddress;
-use GContacts\Feed\EntryParser;
-use GContacts\Google\SharedContactsInterface;
-use Input;
+use GSharedContacts\AtomType\Email;
+use GSharedContacts\AtomType\Im;
+use GSharedContacts\AtomType\Organization;
+use GSharedContacts\AtomType\Phonenumber;
+use GSharedContacts\AtomType\StructuredPostalAddress;
+use GSharedContacts\Feed\EntryParser;
+use GSharedContacts\Google\SharedContactsInterface;
+use Illuminate\Http\Request;
 use Redirect;
 use View;
 
@@ -17,6 +17,8 @@ use View;
  */
 class ContactsController extends Controller
 {
+    /** @var SharedContactsInterface */
+    public $contacts;
 
     /**
      * @param SharedContactsInterface $contacts
@@ -27,7 +29,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function add()
     {
@@ -37,78 +39,19 @@ class ContactsController extends Controller
     /**
      * @param $code
      *
-     * @return $this
+     * @return View
      */
     public function delete($code)
     {
         $contact = $this->contacts->getContact($code);
+
         return view('delete', compact('contact'));
     }
 
     /**
-     * Mass delete confirmation.
-     *
      * @param $code
-     *
-     * @return $this
-     */
-    public function massDelete()
-    {
-        $delete   = Input::get('delete');
-        $contacts = [];
-        if (is_array($delete)) {
-
-            foreach ($delete as $code) {
-                $contacts[] = $this->contacts->getContact($code);
-            }
-            return view('massdelete', compact('contacts'));
-        }
-
-        return View::make('error')->with('message', 'Please select somebody.');
-    }
-
-    /**
-     * Actually mass delete people.
      *
      * @return View
-     */
-    public function reallyMassDelete()
-    {
-        $delete = Input::get('code');
-        if (is_array($delete)) {
-            foreach ($delete as $code) {
-                // delete them!
-                $contact = $this->contacts->getContact($code);
-                $this->contacts->delete($contact, $code);
-            }
-            return Redirect::route('home');
-        }
-        return View::make('error')->with('message', 'Could not delete.');
-    }
-
-    /**
-     * @param $code
-     *
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    public function postDelete($code)
-    {
-
-        $contact = $this->contacts->getContact($code);
-        $result  = $this->contacts->delete($contact, $code);
-        if ($result === true) {
-            return Redirect::route('home');
-        } else {
-            // $error contains the error message!
-            return view('error')->with('message', $result);
-        }
-
-    }
-
-    /**
-     * @param $code
-     *
-     * @return $this
      */
     public function edit($code)
     {
@@ -128,6 +71,7 @@ class ContactsController extends Controller
             $defaultMailRels    = Email::getDefaultRels();
 
             $contact = EntryParser::parseToArray($fullContact);
+
             return view(
                 'edit', compact(
                           'code', 'contact', 'fullContact', 'defaultOrgRels', 'defaultPhoneRels',
@@ -140,50 +84,114 @@ class ContactsController extends Controller
     }
 
     /**
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * @return string
      */
-    public function postAdd()
+    public function editPhoto()
     {
-        $contact = EntryParser::parseFromArray(Input::all());
+        return 'todo, sorry.';
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function massDelete(Request $request)
+    {
+        $delete   = $request->get('delete');
+        $contacts = [];
+        if (is_array($delete)) {
+
+            foreach ($delete as $code) {
+                $contacts[] = $this->contacts->getContact($code);
+            }
+
+            return view('massdelete', compact('contacts'));
+        }
+
+        return view('error')->with('message', 'Please select somebody.');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Redirect
+     */
+    public function postAdd(Request $request)
+    {
+        $contact = EntryParser::parseFromArray($request->all());
 
         $contactXML = EntryParser::parseToXML($contact);
 
         $result = $this->contacts->create($contactXML);
         if ($result === true) {
-            return Redirect::route('home');
+            return redirect(route('home'));
         } else {
-            return View::make('error')->with('message', $result);
+            return view('error')->with('message', $result);
         }
     }
 
     /**
      * @param $code
      *
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * @return Redirect
      */
-    public function postEdit($code)
+    public function postDelete($code)
     {
 
-        if (Input::hasFile('photo')) {
-            $this->contacts->uploadPhoto($code, Input::file('photo'));
+        $contact = $this->contacts->getContact($code);
+        $result  = $this->contacts->delete($contact, $code);
+        if ($result === true) {
+            return redirect(route('home'));
+        } else {
+            // $error contains the error message!
+            return view('error')->with('message', $result);
         }
-        $contact    = EntryParser::parseFromArray(Input::all());
+
+    }
+
+    /**
+     * @param Request $request
+     * @param         $code
+     *
+     * @return Redirect
+     */
+    public function postEdit(Request $request, $code)
+    {
+
+        if ($request->hasFile('photo')) {
+            $this->contacts->uploadPhoto($code, $request->file('photo'));
+        }
+        $contact    = EntryParser::parseFromArray($request->all());
         $contactXML = EntryParser::parseToXML($contact);
         $result     = $this->contacts->update($contactXML, $code);
 
         if ($result === true) {
-            return Redirect::route('contacts.edit', [$code]);
+            return redirect(route('contacts.edit', [$code]));
         } else {
-            return View::make('error')->with('message', $result);
+            return view('error')->with('message', $result);
         }
     }
 
     /**
-     * @return string
+     * @param Request $request
+     *
+     * @return Redirect
      */
-    public function editPhoto()
+    public function reallyMassDelete(Request $request)
     {
-        return 'todo, sorry.';
+        $delete = $request->get('code');
+        if (is_array($delete)) {
+            foreach ($delete as $code) {
+                // delete them!
+                $contact = $this->contacts->getContact($code);
+                $this->contacts->delete($contact, $code);
+            }
+
+            return redirect(route('home'));
+        }
+
+        return view('error')->with('message', 'Could not delete.');
     }
 
 

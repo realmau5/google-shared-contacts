@@ -11,7 +11,7 @@
 |
 */
 
-$app = new Shpasser\GaeSupportL5\Foundation\Application(
+$app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')
 );
 
@@ -28,17 +28,17 @@ $app = new Shpasser\GaeSupportL5\Foundation\Application(
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    GContacts\Http\Kernel::class
+    GSharedContacts\Http\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    GContacts\Console\Kernel::class
+    GSharedContacts\Console\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    GContacts\Exceptions\Handler::class
+    GSharedContacts\Exceptions\Handler::class
 );
 
 /*

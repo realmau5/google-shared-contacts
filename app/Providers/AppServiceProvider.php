@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Providers;
+namespace GSharedContacts\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('GContacts\Google\SharedContactsInterface', 'GContacts\Google\SharedContactsGAEOAuth2');
+        $this->app->bind('GSharedContacts\Google\SharedContactsInterface', 'GSharedContacts\Google\SharedContactsGAEOAuth2');
+
     }
 }

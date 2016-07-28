@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: GContacts
-        psr4_prefix: GContacts
-        src_path: app

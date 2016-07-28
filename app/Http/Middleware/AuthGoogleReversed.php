@@ -1,16 +1,15 @@
 <?php
 
-namespace GContacts\Http\Middleware;
+namespace GSharedContacts\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
-use Redirect;
 use Session;
 
 /**
  * Class AuthGoogleReversed
  *
- * @package GContacts\Http\Middleware
+ * @package GSharedContacts\Http\Middleware
  */
 class AuthGoogleReversed
 {
@@ -45,12 +44,13 @@ class AuthGoogleReversed
     {
         if (Session::has('access_token')) {
             $token        = Session::get('access_token');
-            $expireMoment = $token->created + $token->expires_in;
+            $expireMoment = $token['created'] + $token['expires_in'];
             $time         = time();
             if ($time <= $expireMoment) {
-                return Redirect::route('home');
+                return redirect(route('home'));
             }
         }
+
         return $next($request);
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace GContacts\Google;
+namespace GSharedContacts\Google;
 
 
 /**
  * Interface PersonalContactsInterface
  *
- * @package GContacts\Google
+ * @package GSharedContacts\Google
  */
 interface PersonalContactsInterface
 {

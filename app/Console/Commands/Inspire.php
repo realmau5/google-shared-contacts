@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Console\Commands;
+namespace GSharedContacts\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;

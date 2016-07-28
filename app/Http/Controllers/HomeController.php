@@ -1,14 +1,18 @@
 <?php
 
-namespace GContacts\Http\Controllers;
+namespace GSharedContacts\Http\Controllers;
 
-use GContacts\Google\SharedContactsInterface;
+use GSharedContacts\Google\SharedContactsInterface;
+use Log;
 
 /**
  * Class HomeController
  */
 class HomeController extends Controller
 {
+
+    /** @var SharedContactsInterface  */
+    public $contacts;
 
     /*
     |--------------------------------------------------------------------------
@@ -36,6 +40,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        Log::debug('Now in HomeController::index()');
         return view('index');
     }
 

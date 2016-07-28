@@ -1,12 +1,12 @@
 <?php
-namespace GContacts\Google;
+namespace GSharedContacts\Google;
 
 use Illuminate\Support\ServiceProvider;
 
 /**
  * Class SharedContactsServiceProvider
  *
- * @package GContacts\Google
+ * @package GSharedContacts\Google
  */
 class SharedContactsServiceProvider extends ServiceProvider
 {
@@ -15,13 +15,13 @@ class SharedContactsServiceProvider extends ServiceProvider
     {
         if ($this->app->environment() == 'app-engine') {
             $this->app->bind(
-                'GContacts\Google\SharedContactsInterface', // interface
-                'GContacts\Google\SharedContactsGAEOAuth2' // class
+                'GSharedContacts\Google\SharedContactsInterface', // interface
+                'GSharedContacts\Google\SharedContactsGAEOAuth2' // class
             );
         } else {
             $this->app->bind(
-                'GContacts\Google\SharedContactsInterface', // interface
-                'GContacts\Google\SharedContactsOAuth2' // class
+                'GSharedContacts\Google\SharedContactsInterface', // interface
+                'GSharedContacts\Google\SharedContactsOAuth2' // class
             );
         }
 

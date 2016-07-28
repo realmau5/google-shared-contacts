@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Http\Requests;
+namespace GSharedContacts\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

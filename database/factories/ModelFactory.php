@@ -11,11 +11,11 @@
 |
 */
 
-$factory->define(GContacts\User::class, function ($faker) {
+$factory->define(GSharedContacts\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => str_random(10),
+        'email' => $faker->safeEmail,
+        'password' => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
     ];
 });

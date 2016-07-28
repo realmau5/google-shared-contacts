@@ -1,17 +1,17 @@
 <?php
 
 
-namespace GContacts\Feed;
+namespace GSharedContacts\Feed;
 
 use DomDocument;
-use GContacts\AtomType\Birthday;
-use GContacts\AtomType\Category;
-use GContacts\AtomType\Name;
+use GSharedContacts\AtomType\Birthday;
+use GSharedContacts\AtomType\Category;
+use GSharedContacts\AtomType\Name;
 
 /**
  * Class Entry
  *
- * @package GContacts\Feed
+ * @package GSharedContacts\Feed
  */
 class Entry
 {

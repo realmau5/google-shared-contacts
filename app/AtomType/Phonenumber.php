@@ -1,5 +1,5 @@
 <?php
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 use DomDocument;
 use DomElement;
@@ -8,7 +8,7 @@ use DomNode;
 /**
  * Class Phonenumber
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 class Phonenumber extends DefaultAtomType implements AtomEntryInterface
 {

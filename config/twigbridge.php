@@ -177,6 +177,7 @@ return [
         'functions' => [
             'elixir',
             'head',
+            'session',
             'last',
         ],
 

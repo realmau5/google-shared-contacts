@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 use DOMAttr;
 use DOMDocument;
@@ -10,7 +10,7 @@ use Log;
 /**
  * Class Birthday
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 class Birthday
 {

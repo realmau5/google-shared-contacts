@@ -1,6 +1,6 @@
 <?php
 
-namespace GContacts\Events;
+namespace GSharedContacts\Events;
 
 abstract class Event
 {

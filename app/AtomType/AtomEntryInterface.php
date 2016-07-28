@@ -1,14 +1,14 @@
 <?php
 
 
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 use DomDocument;
 
 /**
  * Interface AtomEntryInterface
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 interface AtomEntryInterface
 {

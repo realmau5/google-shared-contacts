@@ -1,7 +1,7 @@
 <?php
 
 
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 use DomDocument;
 use DomNode;
@@ -9,7 +9,7 @@ use DomNode;
 /**
  * Class Link
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 class Link extends DefaultAtomType
 {

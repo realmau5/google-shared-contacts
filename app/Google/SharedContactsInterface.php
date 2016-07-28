@@ -1,17 +1,17 @@
 <?php
 
 
-namespace GContacts\Google;
+namespace GSharedContacts\Google;
 
 
 use DOMDocument;
-use GContacts\Feed\Entry;
+use GSharedContacts\Feed\Entry;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Interface SharedContactsInterface
  *
- * @package GContacts\Google
+ * @package GSharedContacts\Google
  */
 interface SharedContactsInterface
 {

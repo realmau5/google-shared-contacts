@@ -1,5 +1,5 @@
 <?php
-namespace GContacts\AtomType;
+namespace GSharedContacts\AtomType;
 
 use DomDocument;
 use DomElement;
@@ -8,7 +8,7 @@ use DomNode;
 /**
  * Class Im
  *
- * @package GContacts\AtomType
+ * @package GSharedContacts\AtomType
  */
 class Im extends DefaultAtomType implements AtomEntryInterface
 {
