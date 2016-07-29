@@ -2,11 +2,12 @@
 namespace GSharedContacts\Google;
 
 use DOMDocument;
+use Exception;
 use GSharedContacts\Feed\Entry;
 use GSharedContacts\Feed\EntryParser;
+use GSharedContacts\Support\Variables;
 use Log;
 use Requests;
-use Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Zend\Feed\Reader\Reader;
 
@@ -21,35 +22,22 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     /**
      * @return array
      */
-    public function all()
+    public function all(): array
     {
-        // this is where we start getting contacts:
-        // we begin with nothing:
-        $return = [];
-
-        // we get a bunch of contacts in a loop:
+        $return       = [];
         $moreContacts = true;
         $currentIndex = 1;
-        \Log::debug('Start at index ' . $currentIndex);
+        Log::debug('Start at index ' . $currentIndex);
         $loopCounter = 0;
         while ($moreContacts) {
-            \Log::debug('Loopcounter: ' . $loopCounter);
-
-            // get the nth set:
+            Log::debug('Loopcounter: ' . $loopCounter);
             $rawBody = $this->_getAllContacts($currentIndex);
-            // if error, break out.
-            if ($rawBody === false) {
-                $moreContacts = false;
-                break;
-            }
-            // and we parse the current set:
-            $feed = Reader::importString($rawBody);
-
+            $feed    = Reader::importString($rawBody);
+            Log::debug('Entries found in set', ['count' => $feed->count()]);
             // and add them to the return list.
             if ($feed->count() > 0) {
                 foreach ($feed as $entry) {
-                    $current  = EntryParser::parseFromXML($entry->saveXml());
-                    $return[] = $current;
+                    $return[] = EntryParser::parseFromXML($entry->saveXml());
                 }
             }
 
@@ -68,44 +56,8 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
             }
             $loopCounter++;
         }
+
         return $return;
-
-    }
-
-    /**
-     * @param int $index
-     *
-     * @return bool|string
-     */
-    private function _getAllContacts($index = 1)
-    {
-        $URL = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
-        $URL .= '?max-results=25&start-index=' . $index;
-
-        $token = session('access_token');
-
-        $headers
-              = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
-        $opts = [
-            'http' => [
-                'method' => 'GET',
-                'header' => $headers
-            ]
-        ];
-
-        $context = stream_context_create($opts);
-        $result  = @file_get_contents($URL, false, $context);
-        if ($result === false) {
-            return false;
-        }
-
-
-        $isError = strpos($result, 'Error 403 (Forbidden)');
-        if ($isError) {
-            return false;
-        }
-        return $result;
-
 
     }
 
@@ -121,60 +73,33 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     }
 
     /**
-     * @param                                                     $code
-     * @param UploadedFile                                        $photo
-     *
-     * @return mixed|void
-     */
-    public function uploadPhoto($code, UploadedFile $photo)
-    {
-        $URL     = 'https://www.google.com/m8/feeds/photos/media/' . session('hd') . '/' . $code;
-        $mime    = $photo->getClientMimeType();
-        $token   = session('access_token');
-        $headers = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: " . $mime . "\r\nIf-Match: *\r\nGData-Version: 3.0\r\n";
-        //$filePath = $photo->getRealPath();
-        $filePath = $_FILES['photo']['tmp_name'];
-        $content  = file_get_contents($filePath);
-
-        $opts    = [
-            'http' => [
-                'method'  => 'PUT',
-                'header'  => $headers,
-                'content' => $content
-            ]
-        ];
-        $context = stream_context_create($opts);
-        $result  = @file_get_contents($URL, false, $context);
-
-//        $result = Requests::put(
-//            $URL, $headers, file_get_contents($filePath)
-//        );
-    }
-
-    /**
-     * @param DomDocument  $xml
-     * @param              $code
+     * @param DOMDocument $xml
      *
      * @return bool|string
      */
-    public function update(DomDocument $xml, $code)
+    public function create(DOMDocument $xml)
     {
-        $token   = session('access_token');
-        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $URL   = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
+        $token = session('access_token');
+
         $headers
-                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
-        $opts    = [
+              = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
+        $opts = [
             'http' => [
-                'method'  => 'PUT',
+                'method'  => 'POST',
                 'header'  => $headers,
-                'content' => $xml->saveXML()
-            ]
+                'content' => $xml->saveXML(),
+            ],
         ];
+
+        Log::debug($xml->saveXML());
+
         $context = stream_context_create($opts);
         $result  = @file_get_contents($URL, false, $context);
         if ($result === false) {
-            return 'An error occurred while updating this contact.';
+            return 'Error while retrieving contact.';
         }
+
         return true;
     }
 
@@ -189,50 +114,47 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         $token   = session('access_token');
         $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
         $headers = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\nIf-Match: "
-            . $contact->getEtag() . "\r\n";
+                   . $contact->getEtag() . "\r\n";
 
         $opts    = [
             'http' => [
                 'method' => 'DELETE',
-                'header' => $headers
-            ]
+                'header' => $headers,
+            ],
         ];
         $context = stream_context_create($opts);
         $result  = @file_get_contents($URL, false, $context);
         if ($result === false) {
             return 'Error while retreiving contact.';
         }
+
         return true;
     }
 
     /**
-     * @param DomDocument $xml
+     * @param $code
      *
-     * @return bool|string
+     * @return \GSharedContacts\Feed\Entry|string
      */
-    public function create(DomDocument $xml)
+    public function getContact($code)
     {
-        $URL   = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full';
-        $token = session('access_token');
-
+        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $token   = session('access_token');
         $headers
-              = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
-        $opts = [
+                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
+        $opts    = [
             'http' => [
-                'method'  => 'POST',
-                'header'  => $headers,
-                'content' => $xml->saveXML()
-            ]
+                'method' => 'GET',
+                'header' => $headers,
+            ],
         ];
-
-        Log::debug($xml->saveXML());
-
         $context = stream_context_create($opts);
         $result  = @file_get_contents($URL, false, $context);
         if ($result === false) {
-            return 'Error while retrieving contact.';
+            return 'Error while retreiving contact.';
         }
-        return true;
+
+        return EntryParser::parseFromXML($result);
     }
 
     /**
@@ -255,43 +177,19 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
                     'http' => [
                         'method' => 'GET',
                         'header' => $headers,
-                    ]
+                    ],
                 ];
                 $context = stream_context_create($opts);
                 $result  = @file_get_contents($URL, false, $context);
                 if ($result === false) {
                     return null;
                 }
+
                 return $result;
             }
         }
+
         return null;
-    }
-
-    /**
-     * @param $code
-     *
-     * @return \GSharedContacts\Feed\Entry|string
-     */
-    public function getContact($code)
-    {
-        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
-        $token   = session('access_token');
-        $headers
-                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
-        $opts    = [
-            'http' => [
-                'method' => 'GET',
-                'header' => $headers
-            ]
-        ];
-        $context = stream_context_create($opts);
-        $result  = @file_get_contents($URL, false, $context);
-        if ($result === false) {
-            return 'Error while retreiving contact.';
-        }
-
-        return EntryParser::parseFromXML($result);
     }
 
     /**
@@ -310,8 +208,8 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
                     'Authorization: AuthSub token="' . $tempToken . '"' . "\r\n" .
                     'Content-Type: application/x-www-form-urlencoded' . "\r\n" .
                     'User-Agent: GSharedContacts/0.1' . "\r\n",
-                'content' => null
-            ]
+                'content' => null,
+            ],
         ];
         $context = stream_context_create($context);
         $result  = @file_get_contents($URL, null, $context);
@@ -319,6 +217,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
             return 'Error while getting token.';
         }
         $token = str_replace('Token=', '', $result);
+
         return $token;
     }
 
@@ -336,14 +235,94 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
                     'Authorization: AuthSub token="' . $token['access_token'] . '"' . "\r\n" .
                     'Content-Type: application/x-www-form-urlencoded' . "\r\n" .
                     'User-Agent: GSharedContacts/0.1' . "\r\n",
-                'content' => null
-            ]
+                'content' => null,
+            ],
         ];
         $context = stream_context_create($context);
         $result  = @file_get_contents($URL, null, $context);
         if ($result === false) {
             return 'Error while getting token.';
         }
+
         return true;
+    }
+
+    /**
+     * @param DomDocument  $xml
+     * @param              $code
+     *
+     * @return bool|string
+     */
+    public function update(DomDocument $xml, $code)
+    {
+        $token   = session('access_token');
+        $URL     = 'https://www.google.com/m8/feeds/contacts/' . session('hd') . '/full/' . $code;
+        $headers
+                 = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: application/atom+xml\r\nGData-Version: 3.0\r\n";
+        $opts    = [
+            'http' => [
+                'method'  => 'PUT',
+                'header'  => $headers,
+                'content' => $xml->saveXML(),
+            ],
+        ];
+        $context = stream_context_create($opts);
+        $result  = @file_get_contents($URL, false, $context);
+        if ($result === false) {
+            return 'An error occurred while updating this contact.';
+        }
+
+        return true;
+    }
+
+    /**
+     * @param                                                     $code
+     * @param UploadedFile                                        $photo
+     *
+     * @return mixed|void
+     */
+    public function uploadPhoto($code, UploadedFile $photo)
+    {
+        $URL     = 'https://www.google.com/m8/feeds/photos/media/' . session('hd') . '/' . $code;
+        $mime    = $photo->getClientMimeType();
+        $token   = session('access_token');
+        $headers = "Authorization: AuthSub token=\"{$token['access_token']}\"\r\nContent-Type: " . $mime . "\r\nIf-Match: *\r\nGData-Version: 3.0\r\n";
+        //$filePath = $photo->getRealPath();
+        $filePath = $_FILES['photo']['tmp_name'];
+        $content  = file_get_contents($filePath);
+
+        $opts    = [
+            'http' => [
+                'method'  => 'PUT',
+                'header'  => $headers,
+                'content' => $content,
+            ],
+        ];
+        $context = stream_context_create($opts);
+        $result  = @file_get_contents($URL, false, $context);
+
+        //        $result = Requests::put(
+        //            $URL, $headers, file_get_contents($filePath)
+        //        );
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function _getAllContacts(int $index = 1): string
+    {
+        $URL     = Variables::UriWithStartIndex($index);
+        $headers = Variables::getAuthorizationHeaders();
+        $result  = Requests::get($URL, $headers);
+
+        if ($result->status_code != 200) {
+            Log::debug('_getAllContacts: ', ['code' => $result->status_code, 'body' => $result->body]);
+            throw new Exception('Getting shared contacts generated error ' . $result->status_code . '. Please see the log files.');
+        }
+
+        return $result->body;
     }
 }

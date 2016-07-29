@@ -41,7 +41,7 @@ class ContactsController extends Controller
      *
      * @return View
      */
-    public function delete($code)
+    public function delete(string $code)
     {
         $contact = $this->contacts->getContact($code);
 
@@ -136,7 +136,7 @@ class ContactsController extends Controller
      *
      * @return Redirect
      */
-    public function postDelete($code)
+    public function postDelete(string $code)
     {
 
         $contact = $this->contacts->getContact($code);
@@ -156,7 +156,7 @@ class ContactsController extends Controller
      *
      * @return Redirect
      */
-    public function postEdit(Request $request, $code)
+    public function postEdit(Request $request, string $code)
     {
 
         if ($request->hasFile('photo')) {

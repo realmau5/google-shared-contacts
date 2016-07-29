@@ -4,5 +4,15 @@ $(function () {
 });
 
 function toggleAll() {
-    $('.do-check').click();
+    $.each($('.do-check'), function (i, v) {
+        var box = $(v);
+
+        if (box.prop('checked')) {
+            box.prop('checked', false);
+        } else {
+            box.prop('checked', true);
+
+        }
+    });
+
 }

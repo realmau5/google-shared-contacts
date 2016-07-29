@@ -37,10 +37,12 @@
             </ul>
             <h3>Upload</h3>
 
-            {{ Form.open({'files' : true,url: route('mass-create.upload')}) }}
+            <form action="{{ route('mass-create.upload') }}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                 <p>Upload here: <input type="file" name="csv" /></p>
             <p><input type="submit" value="Upload" class="btn btn-success"></p>
-            {{ Form.close }}
+
+            </form>
 
             <p class="text-info">Uploading could take a while!</p>
 

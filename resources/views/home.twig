@@ -11,7 +11,7 @@
             </p>
 
             <p>
-                <div class="btn-group">
+            <div class="btn-group">
                 <a class="btn btn-info" href="{{ route('contacts.add') }}"><span
                             class="glyphicon glyphicon-plus"></span> Add shared contact</a>
                 <a class="btn btn-default" href="{{ route('mass-create.index') }}"><span
@@ -26,66 +26,68 @@
             <p class="small">
                 Total number of contacts: {{ contacts|length }}
             </p>
-            {{ Form.open({url:'massdelete'}) }}
-            <table class="table sortable table-bordered table-responsive" id="contactList">
-                <thead>
-                <tr>
-                    <th data-defaultsort="disabled"><input type="checkbox" class="select-all" /></th>
-                    <th data-defaultsign="az">Full name</th>
-                    <th data-defaultsign="az">Email address(es)</th>
-                    <th data-defaultsign="az">Phone number(s)</th>
-                    <th data-defaultsort="disabled">Edit</th>
-                    <th data-defaultsort="disabled">Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for contact in contacts %}
+            <form action="{{ route('massdelete') }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                <table class="table sortable table-bordered table-responsive" id="contactList">
+                    <thead>
                     <tr>
-                        <td><input type="checkbox" class="do-check" name="delete[]" value="{{ contact.getShortId }}"/></td>
-                        <td>{{ contact.getName.getFullName }}</td>
-                        <td>
-                            {% if contact.getEmail|length > 0 %}
-                                <ul>
-                                    {% for email in contact.getEmail %}
-                                        <li><a href="mailto:{{ email.getAddress }}">{{ email.getAddress }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if contact.getPhoneNumber|length > 0 %}
-                                <ul>
-                                    {% for phone in contact.getPhoneNumber %}
-                                        <li>{{ phone.getNumber }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ route('contacts.edit', contact.getShortId) }}" class="btn btn-info btn-xs"><span
-                                        class="glyphicon glyphicon-pencil"></span></a>
-                        </td>
-                        <td>
-                            <a href="{{ route('contacts.delete', contact.getShortId) }}"
-                               class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
-                        </td>
+                        <th data-defaultsort="disabled"><input type="checkbox" class="select-all"/></th>
+                        <th data-defaultsign="az">Full name</th>
+                        <th data-defaultsign="az">Email address(es)</th>
+                        <th data-defaultsign="az">Phone number(s)</th>
+                        <th data-defaultsort="disabled">Edit</th>
+                        <th data-defaultsort="disabled">Delete</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>
-                        <button type="submit" name="submit" class="btn btn-danger btn-xs"><span
-                                    class="glyphicon glyphicon-trash"></span></button>
-                    </td>
-                    <td colspan="6"></td>
-                </tr>
-                </tfoot>
-            </table>
-            <p class="small">
-                Total number of contacts: {{ contacts|length }}
-            </p>
-            {{ Form.close }}
+                    </thead>
+                    <tbody>
+                    {% for contact in contacts %}
+                        <tr>
+                            <td><input type="checkbox" class="do-check" name="delete[]" value="{{ contact.getShortId }}"/></td>
+                            <td>{{ contact.getName.getFullName }}</td>
+                            <td>
+                                {% if contact.getEmail|length > 0 %}
+                                    <ul>
+                                        {% for email in contact.getEmail %}
+                                            <li><a href="mailto:{{ email.getAddress }}">{{ email.getAddress }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if contact.getPhoneNumber|length > 0 %}
+                                    <ul>
+                                        {% for phone in contact.getPhoneNumber %}
+                                            <li>{{ phone.getNumber }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ route('contacts.edit', contact.getShortId) }}" class="btn btn-info btn-xs"><span
+                                            class="glyphicon glyphicon-pencil"></span></a>
+                            </td>
+                            <td>
+                                <a href="{{ route('contacts.delete', contact.getShortId) }}"
+                                   class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>
+                            <button type="submit" name="submit" class="btn btn-danger btn-xs"><span
+                                        class="glyphicon glyphicon-trash"></span></button>
+                        </td>
+                        <td colspan="6"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+                <p class="small">
+                    Total number of contacts: {{ contacts|length }}
+                </p>
+            </form>
             <p class="text-info">
                 Please remember it may take 24 hours for Google to reflect any changes made here.
             </p>

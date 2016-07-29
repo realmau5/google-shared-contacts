@@ -12,7 +12,7 @@ Route::get('/logout', ['uses' => 'Auth\AuthController@logout', 'as' => 'oauth.lo
 Route::get('/auth', ['uses' => 'Auth\AuthController@redirect', 'as' => 'oauth.redirect']);
 
 // mass delete:
-Route::post('/massdelete', ['uses' => 'ContactsController@massDelete', 'middleware' => ['auth.google']]);
+Route::post('/massdelete', ['uses' => 'ContactsController@massDelete', 'as' => 'massdelete', 'middleware' => ['auth.google']]);
 Route::post('/reallymassdelete', ['uses' => 'ContactsController@reallyMassDelete', 'middleware' => ['auth.google']]);
 
 // mass create
