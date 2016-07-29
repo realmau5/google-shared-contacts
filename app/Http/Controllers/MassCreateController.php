@@ -16,6 +16,8 @@ use View;
 class MassCreateController extends Controller
 {
 
+    public $contacts;
+
     /**
      * @param SharedContactsInterface $contacts
      */
@@ -50,7 +52,9 @@ class MassCreateController extends Controller
      */
     public function upload(Request $request)
     {
-        // get the file:
+        // create a batch feed thing:
+        $batch = [];
+        // read the file:
         if (!$request->hasFile('csv')) {
             return view('error')->with('message', 'Pls upload something.');
         }
@@ -64,7 +68,7 @@ class MassCreateController extends Controller
         if (count($results) === 1) {
             $reader->setDelimiter(',');
         }
-        $all    = $reader->fetchAll();
+        $all = $reader->fetchAll();
         foreach ($all as $index => $row) {
             if ($index > 0) {
                 // parse data:
@@ -100,9 +104,11 @@ class MassCreateController extends Controller
                 }
 
                 $contact = EntryParser::parseFromArray($array);
-                EntryParser::parseToXML($contact);
+                $batch[] = EntryParser::parseToXML($contact);
             }
         }
+
+        $this->contacts->insertBatch($batch);
 
         return view('mass.uploaded');
     }

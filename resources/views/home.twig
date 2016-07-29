@@ -43,7 +43,11 @@
                     <tbody>
                     {% for contact in contacts %}
                         <tr>
-                            <td><input type="checkbox" class="do-check" name="delete[]" value="{{ contact.getShortId }}"/></td>
+                            <td>
+                                <input type="hidden" name="etag[{{ loop.index0 }}]" value="{{ contact.etag}}"/>
+                                <input type="hidden" name="name[{{ loop.index0 }}]" value="{{ contact.getName.getFullName}}"/>
+                                <input type="checkbox" class="do-check" name="delete[{{ loop.index0 }}]" value="{{ contact.getShortId }}"/>
+                            </td>
                             <td>{{ contact.getName.getFullName }}</td>
                             <td>
                                 {% if contact.getEmail|length > 0 %}
@@ -90,6 +94,8 @@
             </form>
             <p class="text-info">
                 Please remember it may take 24 hours for Google to reflect any changes made here.
+                Occasionally, this very page may lag. Please refresh it when you suspect this
+                is the case. The data is refreshed from Google every time.
             </p>
 
             <p><a href="{{ route('oauth.logout') }}" class="btn btn-sm btn-danger">Disconnect</a></p>

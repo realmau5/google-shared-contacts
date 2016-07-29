@@ -98,12 +98,18 @@ class ContactsController extends Controller
      */
     public function massDelete(Request $request)
     {
+        $etag     = $request->get('etag');
+        $name     = $request->get('name');
         $delete   = $request->get('delete');
         $contacts = [];
         if (is_array($delete)) {
 
-            foreach ($delete as $code) {
-                $contacts[] = $this->contacts->getContact($code);
+            foreach ($delete as $index => $code) {
+                $contacts[] = [
+                    'etag' => $etag[$index] ?? '',
+                    'name' => $name[$index] ?? '',
+                    'code' => $delete[$index] ?? '',
+                ];
             }
 
             return view('massdelete', compact('contacts'));
@@ -181,18 +187,21 @@ class ContactsController extends Controller
     public function reallyMassDelete(Request $request)
     {
         $delete = $request->get('code');
-        if (is_array($delete)) {
-            foreach ($delete as $code) {
-                // delete them!
-                $contact = $this->contacts->getContact($code);
-                $this->contacts->delete($contact, $code);
-            }
+        $etag   = $request->get('etag');
+        $batch  = [];
+
+        foreach ($delete as $index => $code) {
+            $batch[] = [
+                'code' => $code,
+                'etag' => $etag[$index] ?? '',
+            ];
+        }
+
+        if (count($batch) > 0) {
+
+            $this->contacts->deleteBatch($batch);
 
             return redirect(route('home'));
         }
-
-        return view('error')->with('message', 'Could not delete.');
     }
-
-
 }

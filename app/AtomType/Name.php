@@ -39,7 +39,6 @@ class Name extends DefaultAtomType implements AtomEntryInterface
         $children = $doc->getElementsByTagNameNS(self::$GD, 'name');
         $name     = new self;
         // always just one:
-        Log::debug('Children length is ' . $children->length . ' in Name::parseFromDomDocument');
         if ($children->length == 1) {
 
             $first  = $children->item(0);

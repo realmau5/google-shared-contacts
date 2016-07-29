@@ -27,6 +27,40 @@ class Variables
 
     }
 
+    public static function batchUri(): string
+    {
+        $URL    = 'https://www.google.com/m8/feeds/contacts/%s/full/batch ';
+        $parsed = sprintf($URL, session('hd'));
+        Log::debug('Generated URL: ' . $parsed);
+
+        return $parsed;
+    }
+
+    public static function defaultUri(): string
+    {
+        $URL    = 'https://www.google.com/m8/feeds/contacts/%s/full';
+        $parsed = sprintf($URL, session('hd'));
+        Log::debug('Generated URL: ' . $parsed);
+
+        return $parsed;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAuthHeadersForUpdate(): array {
+        $token   = session('access_token');
+        $headers = [
+            'Authorization' => sprintf('AuthSub token="%s"', $token['access_token']),
+            'Content-Type'  => 'application/atom+xml',
+            'GData-Version' => '3.0',
+        ];
+
+        Log::debug('Generated headers', $headers);
+
+        return $headers;
+    }
+
     public static function getAuthorizationHeaders(): array
     {
 

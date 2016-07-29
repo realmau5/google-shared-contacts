@@ -29,7 +29,6 @@ class Birthday
         $children = $doc->getElementsByTagNameNS(self::$GD, 'birthday');
         $birthday = new self;
         // always just one:
-        Log::debug('Children length is ' . $children->length . ' in Birthday::parseFromDomDocument');
         /** @var DOMElement $child */
         foreach ($children as $child) {
             $attributes = $child->attributes;

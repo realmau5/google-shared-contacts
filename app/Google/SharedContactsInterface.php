@@ -16,16 +16,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 interface SharedContactsInterface
 {
 
-    public function all();
-
-    public function logout();
-
     /**
-     * @param $code
-     *
      * @return mixed
      */
-    public function getContact($code);
+    public function all();
 
     /**
      * @param $code
@@ -36,20 +30,11 @@ interface SharedContactsInterface
     public function buildEntryFromArray($code, $arr);
 
     /**
-     * @param              $code
-     * @param UploadedFile $photo
+     * @param DomDocument $xml
      *
      * @return mixed
      */
-    public function uploadPhoto($code, UploadedFile $photo);
-
-    /**
-     * @param DomDocument  $xml
-     * @param              $code
-     *
-     * @return mixed
-     */
-    public function update(DomDocument $xml, $code);
+    public function create(DomDocument $xml);
 
     /**
      * @param Entry                 $contact
@@ -60,11 +45,18 @@ interface SharedContactsInterface
     public function delete(Entry $contact, $code);
 
     /**
-     * @param DomDocument $xml
+     * @param array $batch
      *
      * @return mixed
      */
-    public function create(DomDocument $xml);
+    public function deleteBatch(array $batch);
+
+    /**
+     * @param $code
+     *
+     * @return mixed
+     */
+    public function getContact($code);
 
     /**
      * @param $code
@@ -79,5 +71,33 @@ interface SharedContactsInterface
      * @return mixed
      */
     public function getToken($tempToken);
+
+    /**
+     * @param array $batch
+     *
+     * @return mixed
+     */
+    public function insertBatch(array $batch);
+
+    /**
+     * @return mixed
+     */
+    public function logout();
+
+    /**
+     * @param DomDocument  $xml
+     * @param              $code
+     *
+     * @return mixed
+     */
+    public function update(DomDocument $xml, $code);
+
+    /**
+     * @param              $code
+     * @param UploadedFile $photo
+     *
+     * @return mixed
+     */
+    public function uploadPhoto($code, UploadedFile $photo);
 
 } 

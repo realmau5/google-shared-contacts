@@ -1,126 +1,127 @@
 {% extends "./layouts/default.twig" %}
 {% block content %}
-<script type="text/javascript">
-    var indexes = [];
-</script>
+    <script type="text/javascript">
+        var indexes = [];
+    </script>
     <div class="row">
         <div class="col-lg-12">
-            <h1>GContacts // <a href="{{route('home')}}">{{ Session.get('hd') }}</a> // Edit <span id="fullNameTitle">{{ contact.name.fullName }}</span></h1>
+            <h1>GContacts // <a href="{{ route('home') }}">{{ session('hd') }}</a> // Edit <span id="fullNameTitle">{{ contact.name.fullName }}</span></h1>
             <p class="small" style="font-style: oblique;">
                 If submitted changes don't seem to come through, refresh the page again.
             </p>
         </div>
     </div>
-    {{ Form.open({files : true}) }}
-    {{ Form.hidden('etag', contact.etag) }}
-    {{ Form.hidden('title', contact.title) }}
-    {{ Form.hidden('id', contact.shortID) }}
-    {{ Form.hidden('updated', contact.updated) }}
-    {{ Form.hidden('category[scheme]', contact.category.scheme) }}
-    {{ Form.hidden('category[term]', contact.category.term) }}
-    <div class="row">
+    <form action="{{ route('contacts.update', contact.shortID) }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="etag" value="{{ contact.etag }}"/>
+        <input type="hidden" name="title" value="{{ contact.title }}"/>
+        <input type="hidden" name="id" value="{{ contact.shortID }}"/>
+        <input type="hidden" name="updated" value="{{ contact.updated }}"/>
+        <input type="hidden" name="category[scheme]" value="{{ contact.category.scheme }}"/>
+        <input type="hidden" name="category[term]" value="{{ contact.category.term }}"/>
+        <div class="row">
 
-        <div class="col-lg-6">
-            <h3>Name</h3>
+            <div class="col-lg-6">
+                <h3>Name</h3>
 
-            {% include 'edit/name.twig' %}
-        </div>
-        <div class="col-lg-6">
-            <h3>Photo</h3>
-            {% include 'edit/photo.twig' %}
-
-            <h3>Notes</h3>
-            {% include 'edit/notes.twig' %}
-
-            <h3>Birthday</h3>
-            {% include 'edit/birthday.twig' %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6">
-            <h3>Organization</h3>
-            <div id="organization">
-                {% include 'edit/organization.twig' %}
+                {% include 'edit/name.twig' %}
             </div>
-            <p>
-                <script type="text/javascript">
-                    indexes.organization = {{contact.organization|length}};
-                </script>
-                <a href="#" rel="organization" class="addRow btn btn-default btn-sm">Add another organization</a>
-            </p>
-        </div>
-        <div class="col-lg-6">
-            <h3>Phone numbers</h3>
-            <div id="phoneNumber">
-                {% include 'edit/phone.twig' %}
-            </div>
-            <p>
-                <script type="text/javascript">
-                    indexes.phoneNumber = {{contact.phoneNumber|length}};
-                </script>
-                <a href="#" rel="phoneNumber" class="addRow btn btn-default btn-sm">Add another phone number</a>
-            </p>
-        </div>
+            <div class="col-lg-6">
+                <h3>Photo</h3>
+                {% include 'edit/photo.twig' %}
 
-    </div>
-    <div class="row">
-        <div class="col-lg-6">
-            <h3>Instant messaging</h3>
-            <div id="im">
-                {% include 'edit/im.twig' %}
-            </div>
-            <p>
-                <script type="text/javascript">
-                    indexes.im = {{contact.im|length}};
-                </script>
-                <a href="#" rel="im" class="addRow btn btn-default btn-sm">Add another IM</a>
-            </p>
-        </div>
-        <div class="col-lg-6">
-            <h3>Email addresses</h3>
-            <div id="email">
-                {% include 'edit/email.twig' %}
-            </div>
-            <p>
-                <script type="text/javascript">
-                    indexes.email = {{contact.email|length}};
-                </script>
-                <a href="#" rel="email" class="addRow btn btn-default btn-sm">Add another email address</a>
-            </p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6">
-            <h3>Addresses</h3>
-            <div id="structuredPostalAddress">
-                {% include 'edit/address.twig' %}
-            </div>
-            <p>
-                <script type="text/javascript">
-                    indexes.structuredPostalAddress = {{contact.structuredPostalAddress|length}};
-                </script>
-                <a href="#" rel="structuredPostalAddress" class="addRow btn btn-default btn-sm">Add another address</a>
-            </p>
-        </div>
+                <h3>Notes</h3>
+                {% include 'edit/notes.twig' %}
 
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <p>
-                <input type="submit" class="btn btn-primary btn-lg" value="Submit changes." />
-            </p>
-            <p class="text-warning">
-                Be patient when submitting. There is an intentional delay built in to make sure
-                your updates are reflected back on this page when querying Google. However, often Google
-                lingers so your updates might not show immediately.
-            </p>
+                <h3>Birthday</h3>
+                {% include 'edit/birthday.twig' %}
+            </div>
         </div>
-    </div>
-    {{Form.close()}}
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Organization</h3>
+                <div id="organization">
+                    {% include 'edit/organization.twig' %}
+                </div>
+                <p>
+                    <script type="text/javascript">
+                        indexes.organization = {{ contact.organization|length }};
+                    </script>
+                    <a href="#" rel="organization" class="addRow btn btn-default btn-sm">Add another organization</a>
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <h3>Phone numbers</h3>
+                <div id="phoneNumber">
+                    {% include 'edit/phone.twig' %}
+                </div>
+                <p>
+                    <script type="text/javascript">
+                        indexes.phoneNumber = {{ contact.phoneNumber|length }};
+                    </script>
+                    <a href="#" rel="phoneNumber" class="addRow btn btn-default btn-sm">Add another phone number</a>
+                </p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Instant messaging</h3>
+                <div id="im">
+                    {% include 'edit/im.twig' %}
+                </div>
+                <p>
+                    <script type="text/javascript">
+                        indexes.im = {{ contact.im|length }};
+                    </script>
+                    <a href="#" rel="im" class="addRow btn btn-default btn-sm">Add another IM</a>
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <h3>Email addresses</h3>
+                <div id="email">
+                    {% include 'edit/email.twig' %}
+                </div>
+                <p>
+                    <script type="text/javascript">
+                        indexes.email = {{ contact.email|length }};
+                    </script>
+                    <a href="#" rel="email" class="addRow btn btn-default btn-sm">Add another email address</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Addresses</h3>
+                <div id="structuredPostalAddress">
+                    {% include 'edit/address.twig' %}
+                </div>
+                <p>
+                    <script type="text/javascript">
+                        indexes.structuredPostalAddress = {{ contact.structuredPostalAddress|length }};
+                    </script>
+                    <a href="#" rel="structuredPostalAddress" class="addRow btn btn-default btn-sm">Add another address</a>
+                </p>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>
+                    <input type="submit" class="btn btn-primary btn-lg" value="Submit changes."/>
+                </p>
+                <p class="text-warning">
+                    Be patient when submitting. There is an intentional delay built in to make sure
+                    your updates are reflected back on this page when querying Google. However, often Google
+                    lingers so your updates might not show immediately.
+                </p>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 {% block scripts %}
-<script type="text/javascript">
-    var code ="{{ code }}";
-</script>
-<script src="assets/js/contacts.edit.js"></script>
+    <script type="text/javascript">
+        var code = "{{ code }}";
+    </script>
+    <script src="assets/js/contacts.edit.js"></script>
 {% endblock %}

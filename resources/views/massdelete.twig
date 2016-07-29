@@ -2,10 +2,11 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-12">
-            <h1>GContacts // <a href="{{route('home')}}">{{ Session.get('hd') }}</a> // Delete {{ contact.getName.getFullName }}</h1>
+            <h1>GContacts // <a href="{{route('home')}}">{{ session('hd') }}</a> // Delete {{ contact.getName.getFullName }}</h1>
         </div>
     </div>
-    {{Form.open({url:'reallymassdelete'})}}
+    <form action="{{ route('reallymassdelete') }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
     <div class="row">
 
         <div class="col-lg-12">
@@ -14,15 +15,15 @@
             <ul>
                 {% for contact in contacts %}
                     <li>
-                        {{ contact.getName.getFullName }}
-                        {{ Form.hidden('code[]',contact.getShortId) }}
+                        {{ contact.name }}
+                        <input type="hidden" name="code[{{ loop.index0 }}]" value="{{ contact.code }}" />
+                        <input type="hidden" name="etag[{{ loop.index0 }}]" value="{{ contact.etag}}" />
                     </li>
-
                 {% endfor %}
             </ul>
 
             <p><input type="submit" class="btn btn-danger btn-lg" name="delete" value="Yes, delete {{ contact.getName.getFullName }}" /></p>
         </div>
     </div>
-    {{ Form.close }}
+    </form>
 {% endblock %}

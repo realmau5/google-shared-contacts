@@ -5,10 +5,10 @@
 </script>
     <div class="row">
         <div class="col-lg-12">
-            <h1>GContacts // <a href="{{ route('home') }}">{{ Session.get('hd') }}</a> // Add new contact</h1>
+            <h1>GContacts // <a href="{{ route('home') }}">{{ session('hd') }}</a> // Add new contact</h1>
         </div>
     </div>
-    {{ Form.open({'files' : true}) }}
+    <form action="{{ route('contacts.store') }}" method="post"  accept-charset="UTF-8" enctype="multipart/form-data">
     <div class="row">
 
         <div class="col-lg-6">
@@ -95,7 +95,7 @@
             <input type="submit" class="btn btn-primary btn-lg" value="Submit changes." />
         </div>
     </div>
-    {{ Form.close() }}
+    </form>
 {% endblock %}
 {% block scripts %}
 <script src="assets/js/contacts.edit.js"></script>

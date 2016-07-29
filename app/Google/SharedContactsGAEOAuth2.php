@@ -132,6 +132,80 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     }
 
     /**
+     * @param array $batch
+     *
+     * @return mixed
+     */
+    public function deleteBatch(array $batch)
+    {
+
+        $completeSet = array_chunk($batch, 100);
+
+        foreach ($completeSet as $newBatch) {
+
+            $batchFeed               = new DOMDocument('1.0', 'UTF-8');
+            $batchFeed->formatOutput = true;
+            // create ROOT
+            $feed = $batchFeed->createElement('feed');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2005/Atom');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:gContact', 'http://schemas.google.com/contact/2008');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:gd', 'http://schemas.google.com/g/2005');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:batch', 'http://schemas.google.com/gdata/batch');
+
+            // create category thing:
+            $category = $batchFeed->createElement('category');
+            $category->setAttribute('scheme', 'http://schemas.google.com/g/2005#kind');
+            $category->setAttribute('term', 'http://schemas.google.com/g/2008#contact');
+            $feed->appendChild($category);
+            $batchFeed->appendChild($feed);
+
+            $index = 1;
+            /** @var DOMDocument $entry */
+            foreach ($newBatch as $entry) {
+
+                $code = $entry['code'];
+                $etag = $entry['etag'];
+                $node = $batchFeed->createElement('entry');
+                if (strlen($etag) > 0) {
+                    $node->setAttribute('gd:etag', $etag);
+                }
+
+
+                // add an edit-link:
+                $link = $batchFeed->createElement('link');
+                $link->setAttribute('rel', 'edit');
+                $link->setAttribute('type', 'application/atom+xml');
+                $link->setAttribute('href', sprintf('https://www.google.com/m8/feeds/contacts/%s/full/%s', session('hd'), $code));
+                $node->appendChild($link);
+
+                // add id thing:
+                $id = $batchFeed->createElement('id', sprintf('http://www.google.com/m8/feeds/contacts/%s/base/%s', session('hd'), $code));
+                $node->appendChild($id);
+
+                // add batch stuff.
+                $batchId = $batchFeed->createElement('batch:id', $index);
+                $batchOp = $batchFeed->createElement('batch:operation');
+                $batchOp->setAttribute('type', 'delete');
+                $node->appendChild($batchId);
+                $node->appendChild($batchOp);
+                $feed->appendChild($node);
+                //                $index++;
+            }
+
+            Log::debug('Mass delete XML: ' . $batchFeed->saveXML());
+
+            // send to Google:
+            $URL     = Variables::batchUri();
+            $headers = Variables::getAuthHeadersForUpdate();
+
+            $result = Requests::post($URL, $headers, $batchFeed->saveXML());
+            Log::debug('Mass delete status code: ' . $result->status_code);
+            Log::debug('Mass delete body: ' . $result->body);
+        }
+
+    }
+
+    /**
      * @param $code
      *
      * @return \GSharedContacts\Feed\Entry|string
@@ -153,6 +227,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         if ($result === false) {
             return 'Error while retreiving contact.';
         }
+        Log::debug('Get contact: ' . $result);
 
         return EntryParser::parseFromXML($result);
     }
@@ -219,6 +294,59 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         $token = str_replace('Token=', '', $result);
 
         return $token;
+    }
+
+    /**
+     * @param array $batch
+     *
+     * @return mixed
+     */
+    public function insertBatch(array $batch)
+    {
+        $completeSet = array_chunk($batch, 100);
+
+        foreach ($completeSet as $newBatch) {
+
+            $batchFeed               = new DOMDocument('1.0', 'UTF-8');
+            $batchFeed->formatOutput = true;
+            // create ROOT
+            $feed = $batchFeed->createElement('feed');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2005/Atom');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:gContact', 'http://schemas.google.com/contact/2008');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:gd', 'http://schemas.google.com/g/2005');
+            $feed->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:batch', 'http://schemas.google.com/gdata/batch');
+
+            // create category thing:
+            $category = $batchFeed->createElement('category');
+            $category->setAttribute('scheme', 'http://schemas.google.com/g/2005#kind');
+            $category->setAttribute('term', 'http://schemas.google.com/g/2008#contact');
+            $feed->appendChild($category);
+            $batchFeed->appendChild($feed);
+
+            $index = 1;
+            /** @var DOMDocument $entry */
+            foreach ($newBatch as $entry) {
+                $node = $batchFeed->importNode($entry->documentElement, true);
+
+                $batchId = $batchFeed->createElement('batch:id', $index);
+                $batchOp = $batchFeed->createElement('batch:operation');
+                $batchOp->setAttribute('type', 'insert');
+                $node->appendChild($batchId);
+                $node->appendChild($batchOp);
+                $feed->appendChild($node);
+                $index++;
+            }
+
+            // send to Google:
+            $URL     = Variables::batchUri();
+            $headers = Variables::getAuthHeadersForUpdate();
+
+            $result = Requests::post($URL, $headers, $batchFeed->saveXML());
+            Log::debug('Mass insert body: ' . $batchFeed->saveXML());
+            Log::debug('Mass insert status code: ' . $result->status_code);
+            Log::debug('Mass insert body: ' . $result->body);
+        }
+
     }
 
     /**

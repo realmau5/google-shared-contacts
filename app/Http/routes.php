@@ -13,7 +13,7 @@ Route::get('/auth', ['uses' => 'Auth\AuthController@redirect', 'as' => 'oauth.re
 
 // mass delete:
 Route::post('/massdelete', ['uses' => 'ContactsController@massDelete', 'as' => 'massdelete', 'middleware' => ['auth.google']]);
-Route::post('/reallymassdelete', ['uses' => 'ContactsController@reallyMassDelete', 'middleware' => ['auth.google']]);
+Route::post('/reallymassdelete', ['uses' => 'ContactsController@reallyMassDelete', 'as' => 'reallymassdelete', 'middleware' => ['auth.google']]);
 
 // mass create
 Route::get('/mass-create', ['uses' => 'MassCreateController@index', 'as' => 'mass-create.index', 'middleware' => ['auth.google']]);
@@ -26,9 +26,9 @@ Route::get('/add', ['uses' => 'ContactsController@add', 'as' => 'contacts.add', 
 Route::get('/edit/{code}', ['uses' => 'ContactsController@edit', 'as' => 'contacts.edit', 'middleware' => ['auth.google']]);
 Route::get('/delete/{code}', ['uses' => 'ContactsController@delete', 'as' => 'contacts.delete', 'middleware' => ['auth.google']]);
 Route::get('/mng-photo/{code}', ['uses' => 'ContactsController@editPhoto', 'as' => 'contacts.manage-photo', 'middleware' => ['auth.google']]);
-Route::post('/add', ['uses' => 'ContactsController@postAdd', 'middleware' => ['auth.google']]);
-Route::post('/edit/{code}', ['uses' => 'ContactsController@postEdit', 'middleware' => ['auth.google']]);
-Route::post('/delete/{code}', ['uses' => 'ContactsController@postDelete', 'middleware' => ['auth.google']]);
+Route::post('/add', ['uses' => 'ContactsController@postAdd', 'as' => 'contacts.store', 'middleware' => ['auth.google']]);
+Route::post('/edit/{code}', ['uses' => 'ContactsController@postEdit', 'as' => 'contacts.update', 'middleware' => ['auth.google']]);
+Route::post('/delete/{code}', ['uses' => 'ContactsController@postDelete', 'as' => 'contacts.delete', 'middleware' => ['auth.google']]);
 
 // JSON and AJAX code:
 Route::get('/rpc/addrow/{tpl}/{index}', ['uses' => 'RpcController@addRow', 'as' => 'edit.addRow', 'middleware' => ['auth.google']]);
