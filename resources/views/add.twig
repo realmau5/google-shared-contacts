@@ -9,6 +9,7 @@
         </div>
     </div>
     <form action="{{ route('contacts.store') }}" method="post"  accept-charset="UTF-8" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
     <div class="row">
 
         <div class="col-lg-6">
