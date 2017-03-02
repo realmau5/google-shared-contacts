@@ -17,7 +17,7 @@ class Variables
      *
      * @return string
      */
-    public static function UriWithStartIndex(int $index):string
+    public static function UriWithStartIndex($index)
     {
         $URL    = 'https://www.google.com/m8/feeds/contacts/%s/full?max-results=25&start-index=%d';
         $parsed = sprintf($URL, session('hd'), $index);
@@ -27,7 +27,7 @@ class Variables
 
     }
 
-    public static function batchUri(): string
+    public static function batchUri()
     {
         $URL    = 'https://www.google.com/m8/feeds/contacts/%s/full/batch ';
         $parsed = sprintf($URL, session('hd'));
@@ -36,7 +36,7 @@ class Variables
         return $parsed;
     }
 
-    public static function defaultUri(): string
+    public static function defaultUri()
     {
         $URL    = 'https://www.google.com/m8/feeds/contacts/%s/full';
         $parsed = sprintf($URL, session('hd'));
@@ -48,7 +48,8 @@ class Variables
     /**
      * @return array
      */
-    public static function getAuthHeadersForUpdate(): array {
+    public static function getAuthHeadersForUpdate()
+    {
         $token   = session('access_token');
         $headers = [
             'Authorization' => sprintf('AuthSub token="%s"', $token['access_token']),
@@ -61,7 +62,7 @@ class Variables
         return $headers;
     }
 
-    public static function getAuthorizationHeaders(): array
+    public static function getAuthorizationHeaders()
     {
 
         $token   = session('access_token');

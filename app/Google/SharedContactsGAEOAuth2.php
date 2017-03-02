@@ -22,7 +22,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
     /**
      * @return array
      */
-    public function all(): array
+    public function all()
     {
         $return       = [];
         $moreContacts = true;
@@ -440,7 +440,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
      * @return string
      * @throws Exception
      */
-    private function _getAllContacts(int $index = 1): string
+    private function _getAllContacts($index = 1)
     {
         $URL     = Variables::UriWithStartIndex($index);
         $headers = Variables::getAuthorizationHeaders();
